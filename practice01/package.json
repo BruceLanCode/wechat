@@ -1,7 +1,9 @@
 {
   "dependencies": {
     "bluebird": "^3.5.1",
+    "content-type": "^1.0.4",
     "koa": "^2.4.1",
+    "raw-body": "^2.3.2",
     "request": "^2.83.0",
     "sha1": "^1.1.1"
   }
