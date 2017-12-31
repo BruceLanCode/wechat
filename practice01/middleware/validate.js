@@ -4,10 +4,11 @@ const sha1 = require('sha1');
 const getRawBody = require('raw-body');
 const contentType = require('content-type');
 const Wechat = require('./wechat');
+const util = require('./util');
 
 
 module.exports = config =>{
-    let wechat = new Wechat(config.wechat);
+    // let wechat = new Wechat(config.wechat);
 
     return async (ctx,next) => {
         console.log(ctx.query);
@@ -40,7 +41,10 @@ module.exports = config =>{
                 encoding: contentType.parse(ctx.req).parameters.charset
             });
 
-            console.log(data);
+            let content = await util.parseXMLAsync(data);
+            console.log(content);
+            let message = util.formatMessage(content.xml);
+            console.log(message);
         }
     }
 };
