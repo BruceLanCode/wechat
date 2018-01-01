@@ -40,7 +40,7 @@ module.exports = config =>{
                 limit: '1mb',
                 encoding: contentType.parse(ctx.req).parameters.charset
             });
-            console.log(data.toString());
+            // console.log(data.toString());
             let content = await util.parseXMLAsync(data);
             // console.log(content);
             let message = util.formatMessage(content.xml);
@@ -51,15 +51,13 @@ module.exports = config =>{
                     let now = new Date().getTime();
                     ctx.status = 200;
                     ctx.type = 'text/xml';
-                    let reply = '<xml> ' +
+                    ctx.body = '<xml> ' +
                         '<ToUserName><![CDATA[' + message.FromUserName + ']]></ToUserName> ' +
                         '<FromUserName><![CDATA[' + message.ToUserName + ']]></FromUserName> ' +
                         '<CreateTime>' + now +'</CreateTime> ' +
                         '<MsgType><![CDATA[text]]></MsgType> ' +
                         '<Content><![CDATA[2018新年好]]></Content>' +
                         ' </xml>';
-                    console.log(reply)
-                    ctx.body = reply;
                     return;
                 }
             }
