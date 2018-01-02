@@ -2,6 +2,7 @@
 
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
+const util = require('./util');
 
 const prefix = 'https://api.weixin.qq.com/cgi-bin/token';
 const api = {
@@ -75,6 +76,19 @@ class Wechat {
                 console.log(err)
             })
         });
+    }
+
+    replay() {
+        // let content = this.body;
+        let content = this.weixin.Content;
+        let message = this.weixin;
+
+        let xml = util.tpl(content, message);
+
+        this.status = 200;
+        this.type = 'text/xml';
+        // console.log(xml);
+        this.body = xml;
     }
 }
 

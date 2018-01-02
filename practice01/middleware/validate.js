@@ -44,7 +44,7 @@ module.exports = config =>{
             let content = await util.parseXMLAsync(data);
             // console.log(content);
             let message = util.formatMessage(content.xml);
-            // console.log(message);
+            console.log(message);
 
             if(message.MsgType === 'event') {
                 if(message.Event === 'subscribe') {
@@ -61,6 +61,10 @@ module.exports = config =>{
                     return;
                 }
             }
+
+            ctx.weixin = message;
+            // await handler.call(ctx, next);
+            wechat.replay.call(ctx);
         }
     }
 };
