@@ -56,13 +56,13 @@ exports.tpl = (content, message) => {
         type = 'news';
     }
 
-    type = message.type || type;
+    type = content.type || type;
     info.content = content;
     info.createTime = new Date().getTime();
     info.msgType = type;
     info.toUserName = fromUsername;
     info.fromUserName = toUsername;
-    console.log(info);
+    // console.log(info);
 
     return tpl.compiled(info);
 }

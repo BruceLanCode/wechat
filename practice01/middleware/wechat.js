@@ -121,7 +121,7 @@ class Wechat {
 
     replay() {
         let content = this.body;
-        // let content = this.weixin.Content;
+        // console.log(content);
         let message = this.weixin;
 
         let xml = util.tpl(content, message);
