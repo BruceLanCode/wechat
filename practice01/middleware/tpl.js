@@ -40,7 +40,7 @@ let tpl = heredoc(() => {/*
         <item>
             <Title><![CDATA[<%= item.title %>]]></Title>
             <Description><![CDATA[<%= item.description %>]]></Description>
-            <PicUrl><![CDATA[<%= item.picurl %>]]></PicUrl>
+            <PicUrl><![CDATA[<%= item.picUrl %>]]></PicUrl>
             <Url><![CDATA[<%= item.url %>]]></Url>
         </item>
         <% }) %>

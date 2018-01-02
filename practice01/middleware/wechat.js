@@ -2,11 +2,13 @@
 
 const Promise = require('bluebird');
 const request = Promise.promisify(require('request'));
+const fs = require('fs');
 const util = require('./util');
 
-const prefix = 'https://api.weixin.qq.com/cgi-bin/token';
+const prefix = 'https://api.weixin.qq.com/cgi-bin/';
 const api = {
-    accessToken: prefix + '?grant_type=client_credential'
+    accessToken: prefix + 'token?grant_type=client_credential',
+    upload: prefix + 'media/upload?'
 }
 
 class Wechat {
@@ -15,6 +17,13 @@ class Wechat {
         this.appSecret = props.appsecret;
         this.getAccessToken = props.getAccessToken;
         this.saveAccessToken = props.saveAccessToken;
+        this.fetchAccessToken();
+    }
+
+    fetchAccessToken() {
+        if (this.access_token && this.isValidAccessToken(this)) {
+            return Promise.resolve(this);
+        }
 
         this.getAccessToken()
             .then(data => {
@@ -37,7 +46,8 @@ class Wechat {
                 this.expires_in = data.expires_in;
 
                 this.saveAccessToken(data);
-            })
+                return Promise.resolve(data);
+            });
     }
 
     isValidAccessToken(data) {
@@ -58,7 +68,7 @@ class Wechat {
     updateAccessToken() {
         const appID = this.appID;
         const appSecret = this.appSecret;
-        const url = api.accessToken + '&appid=' + appID + '&secret=' + appSecret;
+        let url = api.accessToken + '&appid=' + appID + '&secret=' + appSecret;
 
         return new Promise((resolve,reject) => {
             request({
@@ -78,16 +88,47 @@ class Wechat {
         });
     }
 
+    uploadMaterial(type, filepath) {
+        console.log(filepath);
+        let form = {
+            media: fs.createReadStream(filepath)
+        }
+
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.upload + 'access_token=' + data.access_token + '&type=' + type;
+                    request({
+                        method: 'POST',
+                        url,
+                        formData: form,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        // console.log('wechat.js upload',_data);
+                        if(_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Upload material fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                });
+        });
+    }
+
     replay() {
-        // let content = this.body;
-        let content = this.weixin.Content;
+        let content = this.body;
+        // let content = this.weixin.Content;
         let message = this.weixin;
 
         let xml = util.tpl(content, message);
 
         this.status = 200;
         this.type = 'text/xml';
-        // console.log(xml);
+        console.log(xml);
         this.body = xml;
     }
 }

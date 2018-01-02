@@ -52,11 +52,11 @@ exports.tpl = (content, message) => {
     let fromUsername = message.FromUserName;
     let toUsername = message.ToUserName;
 
-    // if(Array.isArray(content)) {
-    //     type = 'news';
-    // }
+    if(Array.isArray(content)) {
+        type = 'news';
+    }
 
-    // type = message.type || type;
+    type = message.type || type;
     info.content = content;
     info.createTime = new Date().getTime();
     info.msgType = type;

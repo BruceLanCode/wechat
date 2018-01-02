@@ -7,7 +7,7 @@ const Wechat = require('./wechat');
 const util = require('./util');
 
 
-module.exports = config =>{
+module.exports = (config, handler) =>{
     let wechat = new Wechat(config.wechat);
 
     return async (ctx,next) => {
@@ -44,26 +44,26 @@ module.exports = config =>{
             let content = await util.parseXMLAsync(data);
             // console.log(content);
             let message = util.formatMessage(content.xml);
-            console.log(message);
+            // console.log(message);
 
-            if(message.MsgType === 'event') {
-                if(message.Event === 'subscribe') {
-                    let now = new Date().getTime();
-                    ctx.status = 200;
-                    ctx.type = 'text/xml';
-                    ctx.body = '<xml> ' +
-                        '<ToUserName><![CDATA[' + message.FromUserName + ']]></ToUserName> ' +
-                        '<FromUserName><![CDATA[' + message.ToUserName + ']]></FromUserName> ' +
-                        '<CreateTime>' + now +'</CreateTime> ' +
-                        '<MsgType><![CDATA[text]]></MsgType> ' +
-                        '<Content><![CDATA[2018新年好]]></Content>' +
-                        ' </xml>';
-                    return;
-                }
-            }
+            // if(message.MsgType === 'event') {
+            //     if(message.Event === 'subscribe') {
+            //         let now = new Date().getTime();
+            //         ctx.status = 200;
+            //         ctx.type = 'text/xml';
+            //         ctx.body = '<xml> ' +
+            //             '<ToUserName><![CDATA[' + message.FromUserName + ']]></ToUserName> ' +
+            //             '<FromUserName><![CDATA[' + message.ToUserName + ']]></FromUserName> ' +
+            //             '<CreateTime>' + now +'</CreateTime> ' +
+            //             '<MsgType><![CDATA[text]]></MsgType> ' +
+            //             '<Content><![CDATA[2018新年好]]></Content>' +
+            //             ' </xml>';
+            //         return;
+            //     }
+            // }
 
             ctx.weixin = message;
-            // await handler.call(ctx, next);
+            await handler.call(ctx, next);
             wechat.replay.call(ctx);
         }
     }
