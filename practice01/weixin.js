@@ -102,7 +102,7 @@ exports.reply = async function(next) {
 
             reply = {
                 type: 'video',
-                title: '回复视频内容',
+                title: '回复视频内容', 
                 description: '教学视频',
                 media_id: data.media_id
             }
