@@ -89,7 +89,7 @@ class Wechat {
     }
 
     uploadMaterial(type, filepath) {
-        console.log(filepath);
+        // console.log(filepath);
         let form = {
             media: fs.createReadStream(filepath)
         }

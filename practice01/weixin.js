@@ -60,11 +60,32 @@ exports.reply = async function(next) {
             }]
         }
         else if (content === '5') {
-            let data = await wechatApi.uploadMaterial('image', __dirname + '/2.png');
+            let data = await wechatApi.uploadMaterial('image', __dirname + '/material/2.png');
 
             reply = {
                 type: 'image',
                 media_id: data.media_id
+            }
+        }
+        else if (content === '6') {
+            let data = await wechatApi.uploadMaterial('video', __dirname + '/material/6-video.mp4');
+
+            reply = {
+                type: 'video',
+                title: '回复视频内容',
+                description: '教学视频',
+                media_id: data.media_id
+            }
+        }
+        else if (content === '7') {
+            let data = await wechatApi.uploadMaterial('image', __dirname + '/material/2.png');
+
+            reply = {
+                type: 'music',
+                title: '回复音乐内容',
+                description: '放松一下',
+                musicUrl: 'http://mpge.5nd.com/2015/2015-9-12/66325/1.mp3',
+                thumbMediaId: data.media_id
             }
         }
 
