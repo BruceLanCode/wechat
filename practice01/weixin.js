@@ -88,6 +88,25 @@ exports.reply = async function(next) {
                 thumbMediaId: data.media_id
             }
         }
+        else if (content === '8') {
+            let data = await wechatApi.uploadMaterial('image', __dirname + '/material/2.png',{type: 'image'});
+
+            reply = {
+                type: 'image',
+                media_id: data.media_id
+            }
+        }
+        else if (content === '9') {
+            let data = await wechatApi.uploadMaterial('video', __dirname + '/material/6-video.mp4',
+                {type: 'video',decription: '{"title":"Really a nice place","introduction":"Never think it so easy"}'});
+
+            reply = {
+                type: 'video',
+                title: '回复视频内容',
+                description: '教学视频',
+                media_id: data.media_id
+            }
+        }
 
         this.body = reply;
     }
