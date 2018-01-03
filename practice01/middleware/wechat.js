@@ -121,7 +121,7 @@ class Wechat {
             this.fetchAccessToken()
                 .then(data => {
                     let url = uploadUrl + 'access_token=' + data.access_token ;
-                    if (!permanent) {
+                    if (type !== 'pic' && type !== 'news') {
                         url += '&type=' + type;
                     }
                     else {
@@ -138,12 +138,7 @@ class Wechat {
                     else {
                         options.formData = form;
                     }
-                    request({
-                        method: 'POST',
-                        url,
-                        formData: form,
-                        json: true
-                    }).then(res => {
+                    request(options).then(res => {
                         let _data = res.body;
                         // console.log('wechat.js upload',_data);
                         if(_data) {

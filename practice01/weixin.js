@@ -98,7 +98,7 @@ exports.reply = async function(next) {
         }
         else if (content === '9') {
             let data = await wechatApi.uploadMaterial('video', __dirname + '/material/6-video.mp4',
-                {type: 'video',decription: '{"title":"Really a nice place","introduction":"Never think it so easy"}'});
+                {type: 'video',description: '{"title":"Really a nice place","introduction":"Never think it so easy"}'});
 
             reply = {
                 type: 'video',
