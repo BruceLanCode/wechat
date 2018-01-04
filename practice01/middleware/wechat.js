@@ -103,7 +103,7 @@ class Wechat {
     }
 
     uploadMaterial(type, material,permanent) {
-        // console.log(filepath);
+        console.log('upload:'+type);
         let form = {};
         let uploadUrl = api.temporary.upload;
 
@@ -146,7 +146,7 @@ class Wechat {
                     }
                     request(options).then(res => {
                         let _data = res.body;
-                        // console.log('wechat.js upload',_data);
+                        console.log(_data);
                         if(_data) {
                             resolve(_data);
                         } else {
@@ -161,6 +161,7 @@ class Wechat {
     }
 
     fetchMaterial(mediaId, type, permanent) {
+        console.log('fetch:'+mediaId);
         let fetchUrl = api.temporary.fetch;
 
         if(permanent) {
@@ -170,12 +171,35 @@ class Wechat {
         return new Promise((resolve,reject) => {
             this.fetchAccessToken()
                 .then(data => {
-                    let url = fetchUrl + 'access_token=' + data.access_token +
-                    '&media_id=' + mediaId;
-                    if (!permanent && type === 'video') {
-                        url = url.replace('https://','http://');
+                    let url = fetchUrl + 'access_token=' + data.access_token;
+                    let options = {method: 'POST',url,json: true};
+                    let form = {};
+                    if(permanent) {
+                        form.media_id = mediaId;
+                        form.access_token = data.access_token;
+                        options.body = form;
                     }
-                    resolve(url);
+                    else {
+                        if (type === 'video') {
+                            url = url.replace('https://','http://');
+                        }
+                        url += '&media_id=' + mediaId;
+                    }
+                    if(type === 'news' || type === 'video') {
+                        request(options).then(res => {
+                            let _data = res.body;
+                            if(_data) {
+                                resolve(_data);
+                            } else {
+                                throw new Error('fetch material fails');
+                            }
+                        }).catch(err => {
+                            reject(err);
+                        });
+                    }
+                    else {
+                        resolve(url);
+                    }
                 });
         });
     }
@@ -248,7 +272,7 @@ class Wechat {
         return new Promise((resolve,reject) => {
             this.fetchAccessToken()
                 .then(data => {
-                    let url = api.permanent.count + 'access_token=' + data.access_token +;
+                    let url = api.permanent.count + 'access_token=' + data.access_token;
                     request({
                         method: 'GET',
                         url,
@@ -270,13 +294,13 @@ class Wechat {
 
     batchMaterial(options) {
 
-        options.type = options.type || 'image',
-        options.offset = options.offset || 0,
-        options.count = options.count || 1,
+        options.type = options.type || 'image';
+        options.offset = options.offset || 0;
+        options.count = options.count || 1;
         return new Promise((resolve,reject) => {
             this.fetchAccessToken()
                 .then(data => {
-                    let url = api.permanent.batch + 'access_token=' + data.access_token +;
+                    let url = api.permanent.batch + 'access_token=' + data.access_token;
                     request({
                         method: 'POST',
                         url,

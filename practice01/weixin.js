@@ -102,11 +102,79 @@ exports.reply = async function(next) {
 
             reply = {
                 type: 'video',
-                title: '回复视频内容', 
+                title: '回复视频内容',
                 description: '教学视频',
                 media_id: data.media_id
             }
         }
+        else if (content === '10') {
+            let picData = await wechatApi.uploadMaterial('image', __dirname + '/material/2.png', {});
+            let media = {
+                articles: [{
+                    title: 'tututu',
+                    thumb_media_id: picData.media_id,
+                    author: 'lantu',
+                    digest: '没有摘要',
+                    show_cover_pic: 1,
+                    content: '没有内容',
+                    content_source_url: 'https://github.com'
+                },{
+                    title: 'tututu2',
+                    thumb_media_id: picData.media_id,
+                    author: 'lantu',
+                    digest: '没有摘要',
+                    show_cover_pic: 1,
+                    content: '没有内容',
+                    content_source_url: 'https://github.com'
+                }]
+            };
+            let data = await wechatApi.uploadMaterial('news',media,{});
+            data = await wechatApi.fetchMaterial(data.media_id,'news',{});
+
+            console.log(data);
+
+            let items = data.news_item;
+            let news = [];
+
+            items.forEach((item) => {
+                news.push({
+                    title: item.title,
+                    description: item.digest,
+                    picUrl: picData.url,
+                    url: item.url
+                });
+            });
+
+            reply = news;
+        }
+        else if(content === '11') {
+            let counts = await wechatApi.countMaterial()
+            console.log(JSON.stringify(counts));
+
+            let list1 = await wechatApi.batchMaterial({
+                offset: 0,
+                type: 'image',
+                count: 10
+            });
+            let list2 = await wechatApi.batchMaterial({
+                offset: 0,
+                type: 'video',
+                count: 10
+            });
+            let list3 = await wechatApi.batchMaterial({
+                offset: 0,
+                type: 'voice',
+                count: 10
+            });
+            let list4 = await wechatApi.batchMaterial({
+                offset: 0,
+                type: 'news',
+                count: 10
+            });
+            console.log(JSON.stringify([list1,list2,list3,list4]));
+            reply = 'get info';
+        }
+
 
         this.body = reply;
     }
