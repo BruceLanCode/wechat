@@ -22,6 +22,14 @@ const api = {
         update: prefix + 'material/update_news?',
         count: prefix + 'material/get_materialcount?',
         batch: prefix + 'material/batchget_material?'
+    },
+    tags: {
+        create: prefix + 'tags/create?',
+        get: prefix + 'tags/get?',
+        check: prefix + 'tags/getidlist?',
+        update: prefix + 'tags/update?',
+        batchcreate: prefix + 'tags/members/batchtagging?',
+        delete: prefix + 'tags/delete?'
     }
 }
 
@@ -319,6 +327,175 @@ class Wechat {
                     });
                 });
         });
+    }
+
+    createTag(name) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.create + 'access_token=' + data.access_token;
+                    let options = {
+                        tag: {
+                            name
+                        }
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: options,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('create tag fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    getTag(name) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.get + 'access_token=' + data.access_token;
+                    request({
+                        method: 'POST',
+                        url,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get tag fails');
+                        }
+                    }).catch(err => {
+                        console.log(err)
+                    });
+                })
+        })
+    }
+
+    checkTag(openid) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.check + 'access_token=' + data.access_token;
+                    let options = {
+                        openid
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: options,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get user\' tags fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    updateTag(id, name) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.update + 'access_token=' + data.access_token;
+                    let options = {
+                        id,
+                        name
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: options,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('update tags fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    batchCreateTag(openids, tagid) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.batchcreate + 'access_token=' + data.access_token;
+                    let options = {
+                        opeid_list: openids,
+                        tagid
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: options,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('create tags fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    delTag(id) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then((data) => {
+                    let url = api.tags.delete + 'access_token=' + data.access_token;
+                    let options = {
+                        tag: {
+                            id
+                        }
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: options,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('delete tags fails');
+                        }
+                    }).catch(err => {
+                        // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
     }
 
     replay() {

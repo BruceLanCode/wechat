@@ -11,7 +11,7 @@ exports.reply = async function(next) {
             if (message.EventKey) {
                 console.log('扫码二维码进来的' + message.EventKey + ' ' + message.ticket);
             }
-            this.body = '哈哈，你订阅了找个号\n';
+            this.body = '2018新年好,这是图少的测试公众号请放心使用';
 
         }
         else if (message.Event === 'unsubscribe') {
@@ -173,6 +173,19 @@ exports.reply = async function(next) {
             });
             console.log(JSON.stringify([list1,list2,list3,list4]));
             reply = 'get info';
+        }
+        else if (content === '12') {
+            let tag = await wechatApi.createTag('家人');
+            console.log('新分组;',tag);
+            let tags = await wechatApi.getTag();
+            console.log('获取分组列表:',tags);
+            let tag2 = await wechatApi.checkTag(message.FromUserName);
+            console.log('查看自己的分组:',tag2);
+            let tag3 = await wechatApi.batchCreateTag([message.FromUserName],100);
+            console.log('添加分组到死吃帮',tag3);
+            let tag4 = await wechatApi.getTag();
+            conosle.log('移动后的分组',tag4)
+            reply = 'Tag done!'
         }
 
 
