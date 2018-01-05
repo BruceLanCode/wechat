@@ -30,8 +30,14 @@ const api = {
         update: prefix + 'tags/update?',
         batchcreate: prefix + 'tags/members/batchtagging?',
         delete: prefix + 'tags/delete?'
+    },
+    user: {
+        getInfo: prefix + 'user/info?',
+        batchgetInfo: prefix + 'user/info/batchget?',
+        userList: prefix + 'user/get?'
     }
 }
+
 
 class Wechat {
     constructor(props) {
@@ -494,6 +500,68 @@ class Wechat {
                         }
                     }).catch(err => {
                         // console.log(err)
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    getUserInfo(openid) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url;
+                    let options;
+                    if(_.isArray(openid)) {
+                        url = api.user.batchgetInfo + 'access_token=' + data.access_token;
+                        let openids = openid.map(id => ({openid:id,lang:'en'}))
+                        options = {
+                            method: 'POST',
+                            url,
+                            json: true,
+                            body: {
+                                user_list: openids
+                            }
+                        };
+                    }else {
+                        url = api.user.getInfo + 'access_token=' + data.access_token + '&openid=' + openid +'&lang=en';
+                        options = {
+                            method: 'GET',
+                            url,
+                            json: true
+                        };
+                    }
+                    request(options).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get user\'info fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    getUserList(openid='') {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.user.userList + 'access_token=' + data.access_token + '&next_openid=' + openid;
+                    request({
+                        method: 'GET',
+                        url,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get userList fails');
+                        }
+                    }).catch(err => {
                         reject(err);
                     });
                 })

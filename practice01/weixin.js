@@ -175,11 +175,11 @@ exports.reply = async function(next) {
             reply = 'get info';
         }
         else if (content === '12') {
-            // let tag = await wechatApi.createTag('测试组');
+            // let tag = await wechatApi.createTag('兄弟组');
             // console.log('新分组;',tag);
             // let tag1 = await wechatApi.updateTag(102,'贱人组');
             // console.log('更新标签:',tag1);
-            // let tag2 = await wechatApi.batchCreateTag([message.FromUserName],100);
+            // let tag2 = await wechatApi.batchCreateTag(['omlMyxCp5sLkCqSjrT7LvbH3KCpQ'],103);
             // console.log('添加分组到死吃帮',tag2);
             // let tag3 = await wechatApi.delTag(102);
             // console.log('删除贱人组标签：',tag3);
@@ -189,7 +189,18 @@ exports.reply = async function(next) {
             console.log('所有操作之后获取分组列表:',tags);
             reply = 'Tag done!'
         }
-
+        else if (content === '13') {
+            let user = await wechatApi.getUserInfo('omlMyxBAqBkadA7fDwvB61MPd7ps');
+            console.log(user);
+            let users = await wechatApi.getUserInfo(['omlMyxBAqBkadA7fDwvB61MPd7ps','omlMyxNa_t2HYGpmLOLVU_v30cPQ','omlMyxCp5sLkCqSjrT7LvbH3KCpQ']);
+            console.log(users);
+            reply = JSON.stringify(users);
+        }
+        else if (content === '14') {
+            let userList = await wechatApi.getUserList();
+            console.log(userList);
+            reply = JSON.stringify(userList.total);
+        }
 
         this.body = reply;
     }
