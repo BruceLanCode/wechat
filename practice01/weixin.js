@@ -201,6 +201,18 @@ exports.reply = async function(next) {
             console.log(userList);
             reply = JSON.stringify(userList.total);
         }
+        else if (content === '15') {
+            await wechatApi.previewMass('omlMyxJKhZJZu0C4UiC7KAT_WBpw','image','qLOMWeKLKgjJGYLn9iQVIXrzPDpiflALOMao5zXyzdw');
+            reply = 'It\'s done!'
+        }
+        else if (content === '16') {
+            let option = {
+                is_to_all: true
+            };
+            let data = await wechatApi.sendAll(option,'image','qLOMWeKLKgjJGYLn9iQVIXrzPDpiflALOMao5zXyzdw');
+            console.log(data);
+            reply = 'It\'s done';
+        }
 
         this.body = reply;
     }

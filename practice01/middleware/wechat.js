@@ -35,6 +35,11 @@ const api = {
         getInfo: prefix + 'user/info?',
         batchgetInfo: prefix + 'user/info/batchget?',
         userList: prefix + 'user/get?'
+    },
+    mass: {
+        preview: prefix + 'message/mass/preview?',
+        get: prefix + 'message/mass/get?',
+        sendall: prefix + 'message/mass/sendall?'
     }
 }
 
@@ -553,6 +558,96 @@ class Wechat {
                     request({
                         method: 'GET',
                         url,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get userList fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    previewMass(touser, msgtype, media_id) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.mass.preview + 'access_token=' + data.access_token;
+                    let form = {
+                        touser,
+                        msgtype,
+                        [msgtype]: {
+                            media_id: media_id
+                        }
+                    }
+                    request({
+                        method: 'POST',
+                        url,
+                        body: form,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get userList fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    getMass(msg_id) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.mass.get + 'access_token=' + data.access_token;
+                    let form = {
+                        msg_id
+                    };
+                    request({
+                        method: 'POST',
+                        url,
+                        body: form,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('get userList fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    sendAll(filter, msgtype, media_id) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.mass.sendall + 'access_token=' + data.access_token;
+                    let form = {
+                        filter,
+                        msgtype,
+                        [msgtype]: {
+                            media_id
+                        }
+                    };
+                    console.log(form);
+                    request({
+                        method: 'POST',
+                        url,
+                        body: form,
                         json: true
                     }).then(res => {
                         let _data = res.body;
