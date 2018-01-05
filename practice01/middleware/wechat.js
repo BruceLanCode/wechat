@@ -359,7 +359,7 @@ class Wechat {
         })
     }
 
-    getTag(name) {
+    getTag() {
         return new Promise((resolve,reject) => {
             this.fetchAccessToken()
                 .then((data) => {
@@ -416,8 +416,10 @@ class Wechat {
                 .then((data) => {
                     let url = api.tags.update + 'access_token=' + data.access_token;
                     let options = {
-                        id,
-                        name
+                        tag: {
+                            id,
+                            name
+                        }
                     };
                     request({
                         method: 'POST',

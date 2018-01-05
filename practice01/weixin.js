@@ -175,16 +175,18 @@ exports.reply = async function(next) {
             reply = 'get info';
         }
         else if (content === '12') {
-            let tag = await wechatApi.createTag('家人');
-            console.log('新分组;',tag);
+            // let tag = await wechatApi.createTag('测试组');
+            // console.log('新分组;',tag);
+            // let tag1 = await wechatApi.updateTag(102,'贱人组');
+            // console.log('更新标签:',tag1);
+            // let tag2 = await wechatApi.batchCreateTag([message.FromUserName],100);
+            // console.log('添加分组到死吃帮',tag2);
+            // let tag3 = await wechatApi.delTag(102);
+            // console.log('删除贱人组标签：',tag3);
+            let tag4 = await wechatApi.checkTag(message.FromUserName);
+            console.log('查看自己的标签:',tag4);
             let tags = await wechatApi.getTag();
-            console.log('获取分组列表:',tags);
-            let tag2 = await wechatApi.checkTag(message.FromUserName);
-            console.log('查看自己的分组:',tag2);
-            let tag3 = await wechatApi.batchCreateTag([message.FromUserName],100);
-            console.log('添加分组到死吃帮',tag3);
-            let tag4 = await wechatApi.getTag();
-            conosle.log('移动后的分组',tag4)
+            console.log('所有操作之后获取分组列表:',tags);
             reply = 'Tag done!'
         }
 
