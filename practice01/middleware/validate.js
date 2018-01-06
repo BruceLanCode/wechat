@@ -11,7 +11,7 @@ module.exports = (config, handler) =>{
     let wechat = new Wechat(config.wechat);
 
     return async (ctx,next) => {
-        console.log(ctx.query);
+        // console.log(ctx.query);
 
         const token = config.wechat.token;
         const signature = ctx.query.signature;

@@ -1,8 +1,16 @@
 'use strict'
 
-const config = require('./config');
+const config = require('./config.js');
 const Wechat = require('./middleware/wechat');
+// const menu = require('./config/menu');
 let wechatApi = new Wechat(config.wechat);
+
+// wechatApi.deleteMenu().then((res) => {
+//     console.log(res);
+//     return wechatApi.creatMenu(menu)
+// }).then(msg => {
+//     console.log(msg);
+// });
 
 exports.reply = async function(next) {
     let message = this.weixin;
@@ -30,7 +38,39 @@ exports.reply = async function(next) {
             this.body = '看到你扫了一下';
         }
         else if (message.Event === 'VIEW') {
-            this.body = '您点击了菜单中的链接:' + message.EventKey;
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'scancode_push') {
+            console.log(message.ScanCodeInfo.ScanType);
+            console.log(message.ScanCodeInfo.ScanResult);
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'scancode_waitmsg') {
+            console.log(message.ScanCodeInfo.ScanType);
+            console.log(message.ScanCodeInfo.ScanResult);
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'pic_sysphoto') {
+            console.log(message.SendPicsInfo.Count);
+            console.log(message.SendPicsInfo.PicList);
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'pic_photo_or_album') {
+            console.log(message.SendPicsInfo.Count);
+            console.log(message.SendPicsInfo.PicList);
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'pic_weixin') {
+            console.log(message.SendPicsInfo.Count);
+            console.log(message.SendPicsInfo.PicList);
+            this.body = '您点击了菜单:' + message.EventKey;
+        }
+        else if (message.Event === 'location_select') {
+            console.log(message.SendLocationInfo.Location_X);
+            console.log(message.SendLocationInfo.Location_Y);
+            console.log(message.SendLocationInfo.Label);
+            console.log(message.SendLocationInfo.Poiname);
+            this.body = '您点击了菜单:' + message.EventKey;
         }
     }
     else if (message.MsgType === 'text'){
@@ -213,8 +253,19 @@ exports.reply = async function(next) {
             console.log(data);
             reply = 'It\'s done';
         }
+        else if(content === 'delect menu') {
+            let data = await wechatApi.deleteMenu();
+            console.log(data);
+            reply = 'delect menu';
+        }
 
         this.body = reply;
+    } else if (message.MsgType === 'image') {
+        console.log(message);
+        this.body = 'image';
+    }
+    else {
+        this.body = 'other type'
     }
     await next();
 }

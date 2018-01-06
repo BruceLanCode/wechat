@@ -13,7 +13,7 @@ exports.parseXMLAsync = (xml) => (
     })
 );
 
-exports.formatMessage = (result) => {
+const formatMessage = (result) => {
     let message = {};
     if(typeof result === 'object') {
         let keys = Object.keys(result);
@@ -46,6 +46,8 @@ exports.formatMessage = (result) => {
     return message;
 }
 
+exports.formatMessage = formatMessage;
+
 exports.tpl = (content, message) => {
     let info = {};
     let type = 'text';
@@ -55,7 +57,6 @@ exports.tpl = (content, message) => {
     if(Array.isArray(content)) {
         type = 'news';
     }
-
     type = content.type || type;
     info.content = content;
     info.createTime = new Date().getTime();

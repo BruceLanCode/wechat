@@ -40,6 +40,11 @@ const api = {
         preview: prefix + 'message/mass/preview?',
         get: prefix + 'message/mass/get?',
         sendall: prefix + 'message/mass/sendall?'
+    },
+    menu: {
+        create: prefix + 'menu/create?',
+        get: prefix + 'menu/get?',
+        del: prefix + 'menu/delete?'
     }
 }
 
@@ -57,8 +62,7 @@ class Wechat {
         if (this.access_token && this.isValidAccessToken(this)) {
             return Promise.resolve(this);
         }
-
-        this.getAccessToken()
+        return this.getAccessToken()
             .then(data => {
                 try {
                     data = JSON.parse(data);
@@ -655,6 +659,77 @@ class Wechat {
                             resolve(_data);
                         } else {
                             throw new Error('get userList fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    creatMenu(menu) {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.menu.create + 'access_token=' + data.access_token;
+                    request({
+                        method: 'POST',
+                        url,
+                        body: menu,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Create menu fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    getMenu() {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.menu.get + 'access_token=' + data.access_token;
+                    request({
+                        method: 'POST',
+                        url,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('Create menu fails');
+                        }
+                    }).catch(err => {
+                        reject(err);
+                    });
+                })
+        })
+    }
+
+    deleteMenu() {
+        console.log('delete')
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken()
+                .then(data => {
+                    let url = api.menu.del + 'access_token=' + data.access_token;
+                    request({
+                        method: 'GET',
+                        url,
+                        json: true
+                    }).then(res => {
+                        let _data = res.body;
+                        if (_data) {
+                            resolve(_data);
+                        } else {
+                            throw new Error('delete menu fails');
                         }
                     }).catch(err => {
                         reject(err);
