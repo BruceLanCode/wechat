@@ -45,7 +45,8 @@ const api = {
         create: prefix + 'menu/create?',
         get: prefix + 'menu/get?',
         del: prefix + 'menu/delete?'
-    }
+    },
+    ticket: prefix + 'ticket/getticket?'
 }
 
 
@@ -55,7 +56,10 @@ class Wechat {
         this.appSecret = props.appsecret;
         this.getAccessToken = props.getAccessToken;
         this.saveAccessToken = props.saveAccessToken;
+        this.getTicketToken = props.getTicketToken;
+        this.saveTicketToken = props.saveTicketToken;
         this.fetchAccessToken();
+        this.fetchTicketToken();
     }
 
     fetchAccessToken() {
@@ -122,6 +126,73 @@ class Wechat {
             }).catch(err => {
                 console.log(err)
             })
+        });
+    }
+
+    fetchTicketToken() {
+        if (this.access_token && this.isValidTicketToken(this)) {
+            return Promise.resolve(this);
+        }
+        return this.getTicketToken()
+            .then(data => {
+                try {
+                    data = JSON.parse(data);
+                }
+                catch(e) {
+                    // console.log(e);
+                    return this.updateTicketToken()
+                }
+
+                if(this.isValidTicketToken(data)) {
+                    return Promise.resolve(data);
+                } else {
+                    return this.updateTicketToken()
+                }
+            })
+            .then(data => {
+                this.ticket = data.ticket;
+                this.expires_in = data.expires_in;
+
+                this.saveTicketToken(data);
+                return Promise.resolve(data);
+            });
+    }
+
+    isValidTicketToken(data) {
+        if(!data || !data.ticket || !data.expires_in) {
+            return false;
+        }
+
+        let expires_in = data.expires_in;
+        let now = (new Date().getTime());
+
+        if(now < expires_in) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    updateTicketToken() {
+        return new Promise((resolve,reject) => {
+            this.fetchAccessToken().then(tokenData => {
+                let url = api.ticket + '&access_token=' + tokenData.access_token + '&type=jsapi';
+                request({
+                    method: 'GET',
+                    url,
+                    json: true
+                }).then(res => {
+                    let data = res.body;
+                    let now = (new Date().getTime());
+                    let expires_in = now + (data.expires_in - 20) * 1000;
+
+                    data.expires_in = expires_in;
+
+                    resolve(data);
+                }).catch(err => {
+                    console.log(err)
+                })
+            });
         });
     }
 

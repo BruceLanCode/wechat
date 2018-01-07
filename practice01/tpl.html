@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="initial-scale=1,maximum-scale=1,minimum-scale=1">
+    <title>猜电影</title>
+</head>
+<body>
+    <h1>点击标题，开始录音</h1>
+    <div id="keyword">您搜索的电影为 <span></span></div>
+    <div id="director "></div>
+    <div id="year"></div>
+    <div id="poster"></div>
+    <script src="https://cdn.bootcss.com/zepto/1.0rc1/zepto.min.js"></script>
+    <script src="http://res.wx.qq.com/open/js/jweixin-1.2.0.js"></script>
+    <script>
+        wx.config({
+            debug: true,
+            appId: 'gh_675d64c5e22e',
+            timestamp: '',
+            nonceStr: '',
+            signature: '',
+            jsApiList: []
+        });
+        var isRecord = false
+        wx.ready(function() {
+            $('h1').on('tap',function() {
+                if(!isRecord) {
+                    isRecord = true;
+                    wx.startRecord();
+                } else {
+                    wx.stopRecord({
+                        success: function(res) {
+                            var localId = res.localId;
+                            $('#keyword>span').text(localId);
+                            wx.translateVoice({
+                                localId: localId,
+                                isShowProgressTips: 1,
+                                success: function (res) {
+                                    alert('has a result');
+                                    // alert(res.translateResult);
+                                }
+                            });
+                        }
+                    })
+                }
+            })
+        })
+    </script>
+</body>
+</html>
